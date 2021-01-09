@@ -10,26 +10,20 @@ import Alamofire
 import Foundation
 
 
-struct FeedState{
+struct FeedState: Equatable{
+    static func == (lhs: FeedState, rhs: FeedState) -> Bool {
+        lhs.currentPage == rhs.currentPage
+    }
+    
     let currentPage: Int
     let articles: [Article]
 }
 
-struct AppState{
+struct AppState: Equatable{
     let token: String?
     
     let feed: FeedState
     
-    func copy(with token: String) -> AppState {
-        AppState(token: token,feed: FeedState(currentPage: self.feed.currentPage, articles: self.feed.articles))
-    }
-    
-    func copy(with articles: [Article]) -> AppState {
-        AppState(token: self.token, feed: FeedState(currentPage: self.feed.currentPage, articles: self.feed.articles))
-    }
-    func copy(with page: Int) -> AppState {
-        AppState(token: self.token, feed: FeedState(currentPage: self.feed.currentPage, articles: self.feed.articles))
-    }
 }
 
 struct AppEnviroment{
@@ -81,14 +75,16 @@ final class GlobalStore: ObservableObject, Store{
     @Published var state: AppState
     
     func dispatch(_ action: AppActions) {
-        
+        let oldState = state
         switch middleware {
         case nil:
             state = reducer(action, state)
         case .some(let middleware):
             state = reducer(action, middleware(self,state,action))
         }
-        objectWillChange.send()
+        if state != oldState {
+            objectWillChange.send()
+        }
     }
     
 }

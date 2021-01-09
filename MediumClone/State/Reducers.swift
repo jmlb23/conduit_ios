@@ -13,7 +13,7 @@ func mainReducer(_ action: AppActions, _ state: AppState) -> AppState{
     case .none:
         return state
     case .token(let t):
-        return state.copy(with: t)
+        return AppState(token: t, feed: state.feed)
     case .feed(let action):
         return AppState(token: state.token, feed: feedReducer(action, state.feed))
     default:
