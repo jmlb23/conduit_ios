@@ -8,6 +8,7 @@
 import SwiftUI
 import os
 import Combine
+import Kingfisher
 
 
 struct FeedItem : View{
@@ -17,20 +18,21 @@ struct FeedItem : View{
     var body: some View {
         VStack(alignment: .leading){
             HStack{
-                Image(systemName: "pencil")
-                    .scaledToFit()
-                    .frame(width: 36, height: 36)
+                KFImage(URL(string: item.author?.image ?? ""))
+                    .resizable()
+                    .frame(width: 50, height: 50)
                     .clipShape(Circle())
+                    .overlay(Circle().stroke(lineWidth: 1))
                 VStack(alignment: .leading){
-                    Text(item.author?.username ?? "").font(.title3)
+                    Text(item.author?.username ?? "").font(.body).bold()
                     Text(item.createdAt ?? "").font(.caption)
                 }
                 Spacer()
                 HStack{
-                    Image(systemName:"heart.fill").frame(width: 24, height: 24)
-                    Text("(0)")
-                }.padding(2).clipShape(RoundedRectangle(cornerRadius: 5))
-                .overlay(RoundedRectangle(cornerRadius: 5).stroke(lineWidth: 2))
+                    Image(systemName: item.favorited == true ? "heart.fill": "heart").foregroundColor(Color.red).frame(width: 24, height: 24)
+                    Text("\(item.favoritesCount ?? 0)")
+                }.padding(5).clipShape(RoundedRectangle(cornerRadius: 5))
+                .overlay(RoundedRectangle(cornerRadius: 5).stroke(lineWidth: 1))
                 .onTapGesture {
                     fav(item)
                 }
@@ -38,8 +40,8 @@ struct FeedItem : View{
             }.frame(minWidth: .zero, maxWidth: .infinity)
             Spacer()
             VStack(alignment:.leading){
-                Text("some boring title").font(.title2)
-                Text("some boring body").font(.body)
+                Text(item.title ?? "").font(.title3).bold()
+                Text(item.description ?? "").font(.body)
             }
             
         }.navigationTitle("MediumClone")

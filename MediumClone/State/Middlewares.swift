@@ -18,7 +18,6 @@ func callFeedMiddleware(_ store: GlobalStore, _ state: AppState, action: AppActi
             store.enviroment.feed.getFeed(page: store.state.feed.currentPage).subscribe(on: DispatchQueue.global()).sink(receiveCompletion: { error in
                 Logger.i("completed \(error)")
             }, receiveValue: { feed in
-                Logger.i("info \(feed.articles?.description)")
                 store.dispatch(AppActions.feed(.updateFeed(feed.articles ?? [])))
             })
         default:
