@@ -14,11 +14,18 @@ func mainReducer(_ action: AppActions, _ state: AppState) -> AppState{
         return state
     case .token(let t):
         return state.copy(with: t)
-    case .addPage:
-        return state.copy(with: state.currentPage + 1)
-    case .updateFeed(let articles):
-        return state.copy(with: state.articles + articles)
+    case .feed(let action):
+        return AppState(token: state.token, feed: feedReducer(action, state.feed))
     default:
         return state
+    }
+}
+
+func feedReducer(_ action: AppActions.FeedActions, _ state: FeedState) -> FeedState{
+    switch action {
+    case .addPage:
+        return FeedState(currentPage: state.currentPage + 1, articles: state.articles)
+    case .updateFeed(let articles):
+        return FeedState(currentPage: state.currentPage, articles: state.articles + articles)
     }
 }

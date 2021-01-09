@@ -8,9 +8,14 @@
 import Foundation
 
 
+
 enum AppActions {
-    case none
+    
+    enum FeedActions{
+        case addPage
+        case updateFeed([Article])
+    }
     case token(String)
-    case addPage
-    case updateFeed([Article])
+    case none
+    case feed(FeedActions)
 }

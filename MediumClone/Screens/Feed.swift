@@ -64,12 +64,12 @@ struct Feed: View{
     @EnvironmentObject<GlobalStore> var store
     
     var body: some View{
-        List(store.state.articles ,id: \Article.slug){i in
+        List(store.state.feed.articles ,id: \Article.slug){i in
             NavigationLink(destination: EmptyView()) {
                 FeedItem(item: i, fav: {item in
                 }).onAppear{
-                    if i.slug == store.state.articles.last?.slug {
-                        store.dispatch(.addPage)
+                    if i.slug == store.state.feed.articles.last?.slug {
+                        store.dispatch(AppActions.feed(.addPage))
                     }
                 }
             }

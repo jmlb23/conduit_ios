@@ -9,22 +9,26 @@ import Combine
 import Alamofire
 import Foundation
 
+
+struct FeedState{
+    let currentPage: Int
+    let articles: [Article]
+}
+
 struct AppState{
     let token: String?
     
-    let currentPage: Int
-    
-    let articles: [Article]
+    let feed: FeedState
     
     func copy(with token: String) -> AppState {
-        AppState(token: token,currentPage: self.currentPage, articles: self.articles)
+        AppState(token: token,feed: FeedState(currentPage: self.feed.currentPage, articles: self.feed.articles))
     }
     
     func copy(with articles: [Article]) -> AppState {
-        AppState(token: self.token, currentPage: self.currentPage, articles: articles)
+        AppState(token: self.token, feed: FeedState(currentPage: self.feed.currentPage, articles: self.feed.articles))
     }
     func copy(with page: Int) -> AppState {
-        AppState(token: self.token, currentPage: page, articles: self.articles)
+        AppState(token: self.token, feed: FeedState(currentPage: self.feed.currentPage, articles: self.feed.articles))
     }
 }
 
@@ -89,4 +93,4 @@ final class GlobalStore: ObservableObject, Store{
     
 }
 
-let store = GlobalStore(reducer: mainReducer, middleware: callFeedMiddleware, initialS: AppState(token: nil, currentPage: 0, articles: []))
+let store = GlobalStore(reducer: mainReducer, middleware: callFeedMiddleware, initialS: AppState(token: nil, feed: FeedState(currentPage: 0, articles: [])))

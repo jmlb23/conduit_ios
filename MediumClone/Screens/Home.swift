@@ -32,7 +32,7 @@ struct Home: View {
                     .renderingMode(.original)
             }
         }.onAppear{
-            store.dispatch(.addPage)
+            store.dispatch(AppActions.feed(.addPage))
         }
     }
 }
