@@ -10,7 +10,7 @@ import os
 import Combine
 import Alamofire
 
-func callFeedMiddleware(_ store: GlobalStore, _ state: AppState, action: AppActions) -> AppState {
+func callFeedMiddleware(_ store: GlobalStore, _ next: @escaping (AppActions) -> (), action: AppActions) {
     switch action {
     case .feed(let actions):
         switch actions {
@@ -18,14 +18,13 @@ func callFeedMiddleware(_ store: GlobalStore, _ state: AppState, action: AppActi
             store.enviroment.feed.getFeed(page: store.state.feed.currentPage).subscribe(on: DispatchQueue.global()).sink(receiveCompletion: { error in
                 Logger.i("completed \(error)")
             }, receiveValue: { feed in
-                store.dispatch(AppActions.feed(.updateFeed(feed.articles ?? [])))
+                next(AppActions.feed(.updateFeed(feed.articles ?? [])))
             })
         default:
             ()
         }
-        return state
     default:
-        return state
+        ()
     }
 
 }

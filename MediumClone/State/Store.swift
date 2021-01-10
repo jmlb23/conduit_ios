@@ -39,7 +39,7 @@ protocol Store {
     
     var reducer: (AppActions, AppState) ->  AppState  { get }
     
-    var middleware: ((Self, AppState, AppActions) -> AppState)? { get }
+    var middleware: ((GlobalStore,  @escaping (AppActions) -> (), AppActions) -> ())? { get }
     
     var state: State { get set }
     
@@ -57,7 +57,7 @@ final class GlobalStore: ObservableObject, Store{
         AppEnviroment()
     }
     
-    var middleware: ((GlobalStore, AppState, AppActions) -> AppState)?
+    var middleware: ((GlobalStore,  @escaping (AppActions) -> (), AppActions) -> ())?
     
     typealias State = AppState
     
@@ -66,7 +66,7 @@ final class GlobalStore: ObservableObject, Store{
     private(set) var reducer: (AppActions, AppState) ->  AppState
     
     
-    init(reducer: @escaping (AppActions,AppState) -> AppState, middleware:  ((GlobalStore, AppState, AppActions) -> AppState)? = nil, initialS: AppState){
+    init(reducer: @escaping (AppActions,AppState) -> AppState, middleware: ((GlobalStore,  @escaping (AppActions) -> (), AppActions) -> ())? = nil, initialS: AppState){
         self.reducer = reducer
         self.middleware = middleware
         self.state = initialS
@@ -80,7 +80,8 @@ final class GlobalStore: ObservableObject, Store{
         case nil:
             state = reducer(action, state)
         case .some(let middleware):
-            state = reducer(action, middleware(self,state,action))
+            middleware(self,dispatch, action)
+            state = reducer(action, state)
         }
         if state != oldState {
             objectWillChange.send()
