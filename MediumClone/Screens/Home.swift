@@ -10,7 +10,8 @@ import os
 
 struct Home: View {
     @EnvironmentObject<GlobalStore> var store
-
+    @State var isModalVisible = false
+    
     var body: some View {
         TabView{
             NavigationView{
@@ -19,7 +20,11 @@ struct Home: View {
                 Image(systemName: "house")
                     .renderingMode(.original)
             }
-            Text("Favorites").tabItem {
+            Text("Favorites").onAppear{
+                if(store.state.token == nil){
+                    isModalVisible = true
+                }
+            }.tabItem {
                 Image(systemName: "bookmark.fill")
                     .renderingMode(.original)
             }
@@ -33,12 +38,15 @@ struct Home: View {
             }
         }.onAppear{
             store.dispatch(AppActions.feed(.addPage))
+        }.sheet(isPresented: $isModalVisible) {
+            LoginOrRegister()
         }
     }
 }
 
 struct Home_Previews: PreviewProvider {
+    
     static var previews: some View {
-        Home()
+        Home().environmentObject(store)
     }
 }

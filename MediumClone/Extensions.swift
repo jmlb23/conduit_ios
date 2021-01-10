@@ -7,6 +7,7 @@
 
 import os
 import Alamofire
+import SwiftUI
 
 extension Logger {
     private static let shared: Logger = Logger()
@@ -28,6 +29,12 @@ extension Logger {
     }
 }
 
+
+extension Color {
+    static let purple100: Color =
+        Color(red: 0.70, green: 0.62, blue: 0.86, opacity: 1.0)
+    
+}
 
 extension Optional where Wrapped : Collection{
     
