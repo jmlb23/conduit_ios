@@ -10,7 +10,6 @@ import os
 
 struct Home: View {
     @EnvironmentObject<GlobalStore> var store
-    @State var isModalVisible = false
     
     var body: some View {
         TabView{
@@ -20,26 +19,20 @@ struct Home: View {
                 Image(systemName: "house")
                     .renderingMode(.original)
             }
-            Text("Favorites").onAppear{
-                if(store.state.token == nil){
-                    isModalVisible = true
-                }
-            }.tabItem {
+            LoginGuard{ Text("Favorites") }.tabItem {
                 Image(systemName: "bookmark.fill")
                     .renderingMode(.original)
             }
-            Text("Editor").tabItem {
+            LoginGuard{ Text("Editor") }.tabItem {
                 Image(systemName: "text.badge.plus")
                     .renderingMode(.original)
             }
-            Text("Profile").tabItem {
+            LoginGuard{ Text("Profile") }.tabItem {
                 Image(systemName: "person.fill")
                     .renderingMode(.original)
             }
         }.onAppear{
             store.dispatch(AppActions.feed(.addPage))
-        }.sheet(isPresented: $isModalVisible) {
-            LoginOrRegister()
         }
     }
 }

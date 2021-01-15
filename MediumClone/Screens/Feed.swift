@@ -59,16 +59,21 @@ struct PreviewFeedItem : PreviewProvider {
     
     static var previews: some View {
         Feed()
+            .environmentObject(store)
+            .onAppear{
+                store.dispatch(AppActions.feed(.addPage))
+            }
     }
 }
 
 struct Feed: View{
     @EnvironmentObject<GlobalStore> var store
-    
+
     var body: some View{
         List(store.state.feed.articles ,id: \Article.slug){i in
-            NavigationLink(destination: EmptyView()) {
+            NavigationLink(destination: FeedDetail(slug: i.slug ?? "")) {
                 FeedItem(item: i, fav: {item in
+                
                 }).onAppear{
                     if i.slug == store.state.feed.articles.last?.slug {
                         store.dispatch(AppActions.feed(.addPage))

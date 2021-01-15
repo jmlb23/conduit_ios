@@ -13,6 +13,17 @@ struct ArticleFeed: Codable {
     let articlesCount: Int?
 }
 
+// MARK: - ArticleDetail
+struct ArticleDetail: Codable{
+    let article: Article
+}
+
+// MARK: - Comments
+
+struct Comments: Codable {
+    let comments: [Comment]
+}
+
 // MARK: - Article
 struct Article: Codable {
     let slug, title, description, body: String?
@@ -29,3 +40,11 @@ struct Author: Codable {
     let following: Bool?
 }
 
+// MARK: - Comment
+struct Comment: Codable {
+    let id: Int
+    let createdAt: String?
+    let updatedAt: String?
+    let body: String?
+    let author: Author?
+}
