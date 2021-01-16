@@ -15,6 +15,8 @@ enum AppActions {
   }
   enum DetailActions {
     case loadDetail(String)
+    case refreshDetail(Article)
+    case refreshComments([Comment])
   }
   case token(String)
   case none

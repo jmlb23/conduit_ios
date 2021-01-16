@@ -18,15 +18,26 @@ struct FeedState: Equatable {
   let articles: [Article]
 }
 
+struct DetailState: Equatable {
+  static func == (lhs: DetailState, rhs: DetailState) -> Bool {
+    lhs.detail?.slug == rhs.detail?.slug
+      && lhs.comments.map({ $0.id }) == rhs.comments.map({ $0.id })
+  }
+
+  let detail: Article?
+  let comments: [Comment]
+}
+
 struct AppState: Equatable {
   let token: String?
 
   let feed: FeedState
 
+  let detail: DetailState
 }
 
 struct AppEnviroment {
-  let feed = ArticleServiceImp()
+  let articleService = ArticleServiceImp()
 }
 
 protocol Store {
@@ -92,4 +103,6 @@ final class GlobalStore: ObservableObject, Store {
 
 let store = GlobalStore(
   reducer: mainReducer, middleware: callFeedMiddleware,
-  initialS: AppState(token: nil, feed: FeedState(currentPage: 0, articles: [])))
+  initialS: AppState(
+    token: nil, feed: FeedState(currentPage: 0, articles: []),
+    detail: DetailState(detail: nil, comments: [])))
