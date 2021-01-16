@@ -7,19 +7,17 @@
 
 import Foundation
 
-
-
 enum AppActions {
-    
-    enum FeedActions{
-        case addPage
-        case updateFeed([Article])
-    }
-    enum DetailActions{
-        case loadDetail(String)
-    }
-    case token(String)
-    case none
-    case feed(FeedActions)
-    case detail(DetailActions)
+
+  enum FeedActions {
+    case addPage
+    case updateFeed([Article])
+  }
+  enum DetailActions {
+    case loadDetail(String)
+  }
+  case token(String)
+  case none
+  case feed(FeedActions)
+  case detail(DetailActions)
 }

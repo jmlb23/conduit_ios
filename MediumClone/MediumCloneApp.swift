@@ -9,10 +9,10 @@ import SwiftUI
 
 @main
 struct MediumCloneApp: App {
-    var body: some Scene {
-        WindowGroup {
-            Home()
-                .environmentObject(store)
-        }
+  var body: some Scene {
+    WindowGroup {
+      Home()
+        .environmentObject(store)
     }
+  }
 }
