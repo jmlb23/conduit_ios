@@ -9,33 +9,6 @@ import Alamofire
 import Combine
 import Foundation
 
-struct FeedState: Equatable {
-  static func == (lhs: FeedState, rhs: FeedState) -> Bool {
-    lhs.currentPage == rhs.currentPage
-  }
-
-  let currentPage: Int
-  let articles: [Article]
-}
-
-struct DetailState: Equatable {
-  static func == (lhs: DetailState, rhs: DetailState) -> Bool {
-    lhs.detail?.slug == rhs.detail?.slug
-      && lhs.comments.map({ $0.id }) == rhs.comments.map({ $0.id })
-  }
-
-  let detail: Article?
-  let comments: [Comment]
-}
-
-struct AppState: Equatable {
-  let token: String?
-
-  let feed: FeedState
-
-  let detail: DetailState
-}
-
 struct AppEnviroment {
   let articleService = ArticleServiceImp()
 }
@@ -49,7 +22,7 @@ protocol Store {
 
   var reducer: (AppActions, AppState) -> AppState { get }
 
-  var middleware: ((GlobalStore, @escaping (AppActions) -> Void, AppActions) -> Void)? { get }
+  var middleware: [(GlobalStore, @escaping (AppActions) -> Void, AppActions) -> Void] { get }
 
   var state: State { get set }
 
@@ -61,48 +34,62 @@ final class GlobalStore: ObservableObject, Store {
 
   typealias Enviroment = AppEnviroment
 
-  var enviroment: AppEnviroment {
-    AppEnviroment()
-  }
-
-  var middleware: ((GlobalStore, @escaping (AppActions) -> Void, AppActions) -> Void)?
-
   typealias State = AppState
 
   typealias Action = AppActions
 
-  private(set) var reducer: (AppActions, AppState) -> AppState
+  var enviroment: AppEnviroment {
+    AppEnviroment()
+  }
 
   init(
     reducer: @escaping (AppActions, AppState) -> AppState,
-    middleware: ((GlobalStore, @escaping (AppActions) -> Void, AppActions) -> Void)? = nil,
-    initialS: AppState
+    initialS: AppState,
+    middleware: ((GlobalStore, @escaping (AppActions) -> Void, AppActions) -> Void)...
   ) {
     self.reducer = reducer
     self.middleware = middleware
     self.state = initialS
   }
 
+  var middleware: [(GlobalStore, @escaping (AppActions) -> Void, AppActions) -> Void]
+
+  private(set) var reducer: (AppActions, AppState) -> AppState
+
   @Published var state: AppState
 
-  func dispatch(_ action: AppActions) {
-    let oldState = state
-    switch middleware {
-    case nil:
-      state = reducer(action, state)
-    case .some(let middleware):
-      middleware(self, dispatch, action)
-      state = reducer(action, state)
-    }
-    if state != oldState {
-      objectWillChange.send()
-    }
+  private func defaultDispatch(_ action: AppActions) {
+    state = reducer(action, state)
+    objectWillChange.send()
   }
 
+  private lazy var _dispatch: (AppActions) -> Void =
+    middleware
+    .reversed()
+    .map({ $0 })
+    .reduce(
+      { (a: AppActions) -> Void in self.defaultDispatch(a) },
+      { acc, next in
+        {
+          next(self, acc, $0)
+        }
+      })
+
+  func dispatch(_ action: AppActions) {
+    _dispatch(action)
+  }
+
+  func selector<T>(_ select: @escaping (AppState) -> T) -> AnyPublisher<T, Never> {
+    $state.map(select).eraseToAnyPublisher()
+  }
 }
 
 let store = GlobalStore(
-  reducer: mainReducer, middleware: callFeedMiddleware,
+  reducer: mainReducer,
   initialS: AppState(
-    token: nil, feed: FeedState(currentPage: 0, articles: []),
-    detail: DetailState(detail: nil, comments: [])))
+    token: nil,
+    feed: FeedState(currentPage: 0, articles: []),
+    detail: DetailState(detail: nil, comments: [])
+  ),
+  middleware: callFeedMiddleware, callDetailMiddleware, loggerMiddleware
+)

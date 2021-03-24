@@ -39,6 +39,7 @@ struct Home: View {
       }
     }.onAppear {
       store.dispatch(AppActions.feed(.addPage))
+      store.dispatch(AppActions.feed(.getPage))
     }
   }
 }

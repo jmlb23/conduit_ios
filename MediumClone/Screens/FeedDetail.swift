@@ -9,15 +9,15 @@ import Kingfisher
 import SwiftUI
 
 struct FeedDetail: View {
-  let slug: String
-  @EnvironmentObject<GlobalStore> var store
+  @State var slug: String
+  @ObservedObject var store: GlobalStore
 
   var body: some View {
     NavigationView {
       VStack {
         VStack {
           ScrollView {
-            Text("asdda")
+            Text($store.state.wrappedValue.detail.detail?.title ?? "")
               .font(.body)
               .foregroundColor(.black)
               .frame(maxWidth: .infinity, alignment: .leading).padding()
@@ -59,6 +59,6 @@ struct FeedDetail: View {
 
 struct FeedDetail_Previews: PreviewProvider {
   static var previews: some View {
-    FeedDetail(slug: "article-two-ncyeh8").environmentObject(store)
+    FeedDetail(slug: "article-two-ncyeh8", store: store)
   }
 }

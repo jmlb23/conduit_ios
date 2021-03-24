@@ -10,13 +10,21 @@ import Combine
 import Foundation
 import os
 
+func loggerMiddleware(
+  _ store: GlobalStore, _ next: @escaping (AppActions) -> Void, action: AppActions
+) {
+  Logger.i("CURRENT STATE ---> \(store.state)")
+  Logger.i("ACTION ---> \(action)")
+  next(action)
+}
+
 func callFeedMiddleware(
   _ store: GlobalStore, _ next: @escaping (AppActions) -> Void, action: AppActions
 ) {
   switch action {
   case .feed(let actions):
     switch actions {
-    case .addPage:
+    case .getPage:
       store.enviroment.articleService.getFeed(page: store.state.feed.currentPage).subscribe(
         on: DispatchQueue.global()
       ).sink(
@@ -24,13 +32,13 @@ func callFeedMiddleware(
           Logger.i("completed \(error)")
         },
         receiveValue: { feed in
-          next(AppActions.feed(.updateFeed(feed.articles ?? [])))
+          store.dispatch(AppActions.feed(.updateFeed(feed.articles ?? [])))
         })
     default:
-      ()
+      next(action)
     }
   default:
-    ()
+    next(action)
   }
 
 }
@@ -49,22 +57,13 @@ func callDetailMiddleware(
           Logger.i("completed \(error)")
         },
         receiveValue: { feed in
-          next(AppActions.detail(.refreshDetail(feed.article)))
-        })
-      store.enviroment.articleService.getFeedComments(slug: slug).subscribe(
-        on: DispatchQueue.global()
-      ).sink(
-        receiveCompletion: { error in
-          Logger.i("completed \(error)")
-        },
-        receiveValue: { feed in
-          next(AppActions.detail(.refreshComments(feed.comments)))
+          store.dispatch(.detail(.refreshDetail(feed.article)))
         })
     default:
-      ()
+      next(action)
     }
   default:
-    ()
+    next(action)
   }
 
 }

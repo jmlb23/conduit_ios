@@ -70,17 +70,19 @@ struct Feed: View {
   @EnvironmentObject<GlobalStore> var store
 
   var body: some View {
-    List(store.state.feed.articles, id: \Article.slug) { i in
-      NavigationLink(destination: FeedDetail(slug: i.slug ?? "")) {
-        FeedItem(
-          item: i,
-          fav: { item in
-
-          }
-        ).onAppear {
-          if i.slug == store.state.feed.articles.last?.slug {
-            store.dispatch(AppActions.feed(.addPage))
-          }
+    List {
+      ForEach(store.state.feed.articles, id: \Article.slug) { i in
+        NavigationLink(destination: FeedDetail(slug: i.slug ?? "", store: store)) {
+          FeedItem(
+            item: i,
+            fav: { item in }
+          )
+        }
+        if i.slug == store.state.feed.articles.last?.slug {
+            Button("more"){
+                store.dispatch(AppActions.feed(.addPage))
+                store.dispatch(AppActions.feed(.getPage))
+            }
         }
       }
     }

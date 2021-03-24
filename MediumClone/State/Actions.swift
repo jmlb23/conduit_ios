@@ -11,6 +11,7 @@ enum AppActions {
 
   enum FeedActions {
     case addPage
+    case getPage
     case updateFeed([Article])
   }
   enum DetailActions {

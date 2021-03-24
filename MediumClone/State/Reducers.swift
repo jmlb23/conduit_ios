@@ -30,6 +30,8 @@ func feedReducer(_ action: AppActions.FeedActions, _ state: FeedState) -> FeedSt
     return FeedState(currentPage: state.currentPage + 1, articles: state.articles)
   case .updateFeed(let articles):
     return FeedState(currentPage: state.currentPage, articles: state.articles + articles)
+  default:
+    return state
   }
 }
 
