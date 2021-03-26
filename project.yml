@@ -1,0 +1,14 @@
+name: MediumClone # The name of the App
+options: # Some general settings for the project
+  createIntermediateGroups: true # If the folders are nested, also nest the groups in Xcode
+  indentWidth: 2 # indent by 2 spaces
+  tabWidth: 2 # a tab is 2 spaces
+  bundleIdPrefix: "com.github.jmlb23"
+targets: # The List of our targets
+  XcodegenApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "14.0"
+    sources:
+      #Sources
+      - path: MediumClone
