@@ -6,7 +6,7 @@
 //
 
 import Combine
-import Kingfisher
+import struct Kingfisher.KFImage
 import SwiftUI
 import os
 

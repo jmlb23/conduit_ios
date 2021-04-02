@@ -1,3 +1,10 @@
+packages:
+    Alamofire:
+      url: https://github.com/Alamofire/Alamofire.git
+      from: 5.4.1
+    Kingfisher:
+      url: https://github.com/onevcat/Kingfisher.git
+      from: 6.2.1
 name: MediumClone # The name of the App
 options: # Some general settings for the project
   createIntermediateGroups: true # If the folders are nested, also nest the groups in Xcode
@@ -5,10 +12,13 @@ options: # Some general settings for the project
   tabWidth: 2 # a tab is 2 spaces
   bundleIdPrefix: "com.github.jmlb23"
 targets: # The List of our targets
-  XcodegenApp:
+  MediumClone:
     type: application
     platform: iOS
     deploymentTarget: "14.0"
     sources:
-      #Sources
       - path: MediumClone
+    dependencies:
+      - package: Alamofire
+      - package: Kingfisher
+      - sdk: SwiftUI.framework

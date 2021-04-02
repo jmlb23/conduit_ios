@@ -5,8 +5,9 @@
 //  Created by jmlb23 on 15/1/21.
 //
 
-import Kingfisher
+
 import SwiftUI
+import struct Kingfisher.KFImage
 
 struct FeedDetail: View {
   @State var slug: String
