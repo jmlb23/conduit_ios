@@ -1,9 +1,5 @@
 load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application")
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
-load(
-    "@rules_xcodeproj//xcodeproj:defs.bzl",
-    "xcodeproj",
-)
 
 # Version
 
@@ -39,9 +35,4 @@ ios_application(
     deps = [
         ":app.library",
     ],
-)
-
-xcodeproj(
-    name = "app.xcodeproj",
-    top_level_targets = [":app"],  # Required argument
 )

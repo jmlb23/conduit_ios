@@ -40,12 +40,12 @@ http_archive(
     name = "Alamofire",
     urls = ["https://github.com/Alamofire/Alamofire/archive/refs/tags/5.7.0.zip"],
     strip_prefix = "Alamofire-5.7.0",
-    build_file = "//third_party/Alamofire:BUILD.bazel"
+    build_file = "//Source/third_party/Alamofire:BUILD.bazel"
 )
 
 http_archive(
     name = "Kingfisher",
     urls = ["https://github.com/onevcat/Kingfisher/archive/refs/tags/6.2.1.zip"],
     strip_prefix = "Kingfisher-6.2.1",
-    build_file = "//third_party/Kingfisher:BUILD.bazel"
+    build_file = "//Source/third_party/Kingfisher:BUILD.bazel"
 )
