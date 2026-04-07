@@ -1,5 +1,6 @@
 load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application")
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+load("@build_bazel_rules_apple//apple:macos.bzl", "macos_application")
 
 # Version
 
@@ -28,6 +29,22 @@ ios_application(
         ],
         exclude = ["Assets.xcassets/AppIcon.appiconset/**"],
     ),
+    visibility = [
+        "//:__subpackages__",
+        "@rules_xcodeproj//xcodeproj:generated",
+    ],
+    deps = [
+        ":app.library",
+    ],
+)
+
+
+macos_application(
+    name = "appMac",
+    app_icons = glob(["Assets.xcassets/AppIcon.appiconset/**"]),
+    bundle_id = "com.github.jmlb23.MediumClone",
+    infoplists = [":Info.plist"],
+    minimum_os_version = "10.13",
     visibility = [
         "//:__subpackages__",
         "@rules_xcodeproj//xcodeproj:generated",

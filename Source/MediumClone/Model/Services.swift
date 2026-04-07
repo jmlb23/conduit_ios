@@ -19,7 +19,7 @@ protocol ArticleService {
 
 extension ArticleService {
   fileprivate func buildUrl(_ paths: String...) -> String {
-    return "https://conduit.productionready.io/api/\(paths.joined(separator: "/"))"
+    return "https://api.realworld.show/api/\(paths.joined(separator: "/"))"
   }
 }
 

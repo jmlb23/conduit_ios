@@ -18,14 +18,14 @@ struct FeedDetail: View {
       VStack {
         VStack {
           ScrollView {
-            Text($store.state.wrappedValue.detail.detail?.title ?? "")
+              Text($store.state.wrappedValue.detail.detail?.description ?? "")
               .font(.body)
               .foregroundColor(.black)
               .frame(maxWidth: .infinity, alignment: .leading).padding()
           }
         }
         HStack(spacing: 20) {
-          KFImage(URL(string: "item.author?.image"))
+            KFImage(URL(string: $store.state.wrappedValue.detail.detail?.author?.image ?? ""))
             .resizable()
             .frame(width: 50, height: 50, alignment: .leading)
             .clipShape(Circle())
@@ -34,7 +34,7 @@ struct FeedDetail: View {
             NavigationLink(
               destination: Text("Destination"),
               label: {
-                Text("name")
+                  Text($store.state.wrappedValue.detail.detail?.author?.username ?? "")
               })
             Text("2020-01-20")
           }
@@ -50,7 +50,7 @@ struct FeedDetail: View {
             })
         }.frame(maxWidth: .infinity, alignment: .leading).padding()
         Spacer()
-      }.navigationTitle("TITLE")
+      }.navigationTitle($store.state.wrappedValue.detail.detail?.title ?? "")
 
     }.onAppear {
       store.dispatch(.detail(.loadDetail(slug)))

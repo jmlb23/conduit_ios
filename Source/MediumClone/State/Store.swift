@@ -88,7 +88,7 @@ let store = GlobalStore(
   reducer: mainReducer,
   initialS: AppState(
     token: nil,
-    feed: FeedState(currentPage: 0, articles: []),
+    feed: FeedState(currentPage: -1, articles: []),
     detail: DetailState(detail: nil, comments: [])
   ),
   middleware: callFeedMiddleware, callDetailMiddleware, loggerMiddleware
